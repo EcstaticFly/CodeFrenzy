@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../configs/axios.js";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -90,5 +90,4 @@ export const authStore = create((set, get) => ({
       set({ isLoading: false });
     }
   },
-
 }));

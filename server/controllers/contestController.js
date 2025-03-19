@@ -113,20 +113,18 @@ const fetchLeetcodeContests = async () => {
 
 const saveContestsToDB = async (contests) => {
   for (const contest of contests) {
-    await Contest.findOneAndUpdate(
-      { contestId: contest.contestId },
-      contest,
-      { upsert: true }
-    );
+    await Contest.findOneAndUpdate({ contestId: contest.contestId }, contest, {
+      upsert: true,
+    });
   }
 };
 
-export const fetchAndSaveContests  = async () => {
+export const fetchAndSaveContests = async () => {
   try {
     const [codeforces, codechef, leetcode] = await Promise.all([
       fetchCodeforcesContests(),
       fetchCodechefContests(),
-      fetchLeetcodeContests()
+      fetchLeetcodeContests(),
     ]);
 
     const allContests = [...codeforces, ...codechef, ...leetcode];
@@ -147,7 +145,6 @@ export const fetchAndSaveContests  = async () => {
     });
 
     await saveContestsToDB(allContests);
-
   } catch (error) {
     console.error("Error fetching contests:", error.message);
   }
@@ -159,10 +156,11 @@ export const getAllContests = async (req, res) => {
     res.status(200).json({ success: true, contests });
   } catch (error) {
     console.error("Error fetching contests from database:", error.message);
-    res.status(500).json({ success: false, message: "Failed to fetch contests" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch contests" });
   }
 };
-
 
 // Schedule fetching contests every 2 hours
 setInterval(() => {

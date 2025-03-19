@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const contestSchema = new mongoose.Schema({
   contestId: String,
@@ -12,5 +12,5 @@ const contestSchema = new mongoose.Schema({
   youtubeLink: String,
 });
 
-const Contest = mongoose.model('Contest', contestSchema);
+const Contest = mongoose.model("Contest", contestSchema);
 export default Contest;

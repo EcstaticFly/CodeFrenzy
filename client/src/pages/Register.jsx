@@ -2,8 +2,7 @@ import { useRef, useState } from "react";
 import { authStore } from "../store/authStore";
 import { EyeOff, Eye, Loader, Code2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 const initialState = {
   fullName: "",
@@ -19,13 +18,11 @@ const RegisterPage = () => {
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
-
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && index > 0 && !otp[index]) {
       inputRefs.current[index - 1].focus();
     }
   };
-
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
@@ -45,18 +42,16 @@ const RegisterPage = () => {
     } else {
       toast.error(result.message);
     }
-    setOtp(["", "", "", "", "", ""])
-  }
+    setOtp(["", "", "", "", "", ""]);
+  };
 
   function validateEmailDomain(email) {
-
     const gmailRegex = /^[^@]+@gmail\.com$/;
 
     const yahooRegex = /^[^@]+@yahoo\.com$/;
 
     return gmailRegex.test(email) || yahooRegex.test(email);
-
-}
+  }
 
   const isFormValid = async () => {
     if (!formData.fullName.trim()) {
@@ -75,7 +70,7 @@ const RegisterPage = () => {
       toast.error("Password must have at least 6 characters");
       return false;
     }
-    if(!validateEmailDomain(formData.email)){
+    if (!validateEmailDomain(formData.email)) {
       toast.error("Only Gmail, yahoo and iiitranchi emails allowed");
       return false;
     }
@@ -88,7 +83,7 @@ const RegisterPage = () => {
     const isValid = await isFormValid();
     if (isValid) {
       await sendOtp(formData);
-      document.getElementById('otp_modal').showModal();
+      document.getElementById("otp_modal").showModal();
     }
   };
 
@@ -100,8 +95,12 @@ const RegisterPage = () => {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
-              <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 ">
-                <Code2 className="size-6 text-primary" />
+              <div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 ">
+                <img
+                  src="/codeFrenzy.png"
+                  className="size-12 text-primary"
+                  alt="CodeFrenzy logo"
+                />
               </div>
               <h1 className="text-2xl font-bold mt-2">Create Account</h1>
               <p className="text-base-content/60">
@@ -209,19 +208,18 @@ const RegisterPage = () => {
         </div>
       </div>
       <dialog id="otp_modal" className="modal">
-        <div className=" flex items-center justify-center bg-base-300 rounded-lg">
-          <div className="w-full max-w-md p-6 rounded-lg bg-base-300 shadow-md">
-            <p className="h-8 mx-10 bg-base-200 mb-3 rounded-lg">
-              <h3 className="text-center font-extrabold mb-4 mx-10 py-1">
+        <div className="flex items-center justify-center bg-base-300 rounded-lg w-full max-w-3xl p-4 mx-2">
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg p-4 sm:p-6 rounded-lg bg-base-300 shadow-md">
+            <div className="text-center mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold mb-2 sm:mb-4">
                 VERIFY OTP
               </h3>
-            </p>
-
-            <p className="text-center mb-6">
-              Please enter the 6 digit OTP sent to your email ID
-            </p>
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg">
+                Please enter the 6 digit OTP sent to your email ID
+              </p>
+            </div>
             <form>
-              <div className="flex justify-center gap-2 mb-6">
+              <div className="flex justify-center gap-1 sm:gap-2 mb-4 sm:mb-6">
                 {[...Array(6)].map((_, index) => (
                   <input
                     key={index}
@@ -231,17 +229,27 @@ const RegisterPage = () => {
                     onChange={(e) => handleInputChange(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     ref={(el) => (inputRefs.current[index] = el)}
-                    className="w-12 h-12 text-center text-xl ring-1 rounded-lg"
+                    className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 text-center text-base sm:text-lg md:text-xl lg:text-2xl ring-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ))}
               </div>
-              <p className="text-center mb-6">
-              Valid for 5 mins only
-            </p>
-              <div className="modal-action">
+              <p className="text-center mb-4 sm:mb-6 text-xs sm:text-sm md:text-base lg:text-lg">
+                Valid for 5 mins only
+              </p>
+              <div className="modal-action flex justify-center">
                 <form method="dialog">
-                  <button className="btn mr-3 btn-error" onClick={() => setOtp(["", "", "", "", "", ""])}>Close</button>
-                  <button className="btn btn-success" onClick={handleOtpVerification}>Proceed</button>
+                  <button
+                    className="btn mr-3 btn-error text-xs sm:text-sm md:text-base"
+                    onClick={() => setOtp(["", "", "", "", "", ""])}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="btn btn-success text-xs sm:text-sm md:text-base"
+                    onClick={handleOtpVerification}
+                  >
+                    Proceed
+                  </button>
                 </form>
               </div>
             </form>
@@ -250,6 +258,6 @@ const RegisterPage = () => {
       </dialog>
     </div>
   );
-}
+};
 
 export default RegisterPage;

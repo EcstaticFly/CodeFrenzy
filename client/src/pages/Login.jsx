@@ -3,7 +3,6 @@ import { authStore } from "../store/authStore.js";
 import { EyeOff, Eye, Loader, Code2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-
 const initialState = {
   email: "",
   password: "",
@@ -15,7 +14,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(initialState);
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     login(formData);
@@ -26,13 +24,15 @@ const LoginPage = () => {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
-              <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 ">
-                <Code2 className="size-6 text-primary" />
+              <div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 ">
+                <img
+                  src="/codeFrenzy.png"
+                  className="size-12 text-primary"
+                  alt="CodeFrenzy logo"
+                />
               </div>
               <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
-              <p className="text-base-content/60">
-                Login to your account
-              </p>
+              <p className="text-base-content/60">Login to your account</p>
             </div>
           </div>
           <form onSubmit={handleSubmit} className="space-y-7">
@@ -116,7 +116,7 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LoginPage;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {authStore} from "../store/authStore.js";
-import ContestCard from "../components/ContestCard.jsx"
+import { authStore } from "../store/authStore.js";
+import ContestCard from "../components/ContestCard.jsx";
 import {
   BookOpenIcon,
   GridIcon,
@@ -16,12 +16,11 @@ import SkeletonCard from "../components/SkeletonCard.jsx";
 const platforms = ["Codeforces", "Codechef", "Leetcode"];
 const contestStatus = ["Past", "Upcoming"];
 const statusMapping = {
-  "Past": "FINISHED",
-  "Upcoming": "UPCOMING"
+  Past: "FINISHED",
+  Upcoming: "UPCOMING",
 };
 
-
-const HomePage = ()=> {
+const HomePage = () => {
   // Initialize state from localStorage or default values
   const [searchInput, setSearchInput] = useState(() => {
     return localStorage.getItem("contestSearchInput") || "";
@@ -40,17 +39,18 @@ const HomePage = ()=> {
   const [view, setView] = useState(() => {
     return localStorage.getItem("contestView") || "grid";
   });
-  
+
   const { user } = authStore();
-  const { getAllContests, allContests, isLoading, fetchBookmarks } = contestStore();
+  const { getAllContests, allContests, isLoading, fetchBookmarks } =
+    contestStore();
 
   useEffect(() => {
     getAllContests();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchBookmarks();
-  },[]);
+  }, []);
 
   // Save searchInput to localStorage whenever it changes
   useEffect(() => {
@@ -69,12 +69,18 @@ const HomePage = ()=> {
 
   // Save selectedPlatforms to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("contestSelectedPlatforms", JSON.stringify(selectedPlatforms));
+    localStorage.setItem(
+      "contestSelectedPlatforms",
+      JSON.stringify(selectedPlatforms)
+    );
   }, [selectedPlatforms]);
 
   // Save selectedStatuses to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("contestSelectedStatuses", JSON.stringify(selectedStatuses));
+    localStorage.setItem(
+      "contestSelectedStatuses",
+      JSON.stringify(selectedStatuses)
+    );
   }, [selectedStatuses]);
 
   // Save view to localStorage whenever it changes
@@ -83,9 +89,9 @@ const HomePage = ()=> {
   }, [view]);
 
   const togglePlatform = (platform) => {
-    setSelectedPlatforms(prev => {
+    setSelectedPlatforms((prev) => {
       if (prev.includes(platform)) {
-        return prev.filter(p => p !== platform);
+        return prev.filter((p) => p !== platform);
       } else {
         return [...prev, platform];
       }
@@ -93,9 +99,9 @@ const HomePage = ()=> {
   };
 
   const toggleStatus = (status) => {
-    setSelectedStatuses(prev => {
+    setSelectedStatuses((prev) => {
       if (prev.includes(status)) {
-        return prev.filter(s => s !== status);
+        return prev.filter((s) => s !== status);
       } else {
         return [...prev, status];
       }
@@ -115,21 +121,27 @@ const HomePage = ()=> {
   };
 
   const filteredContests = useMemo(() => {
-    return allContests.filter(contest => {
-      const matchesSearch = searchQuery === "" || 
+    return allContests.filter((contest) => {
+      const matchesSearch =
+        searchQuery === "" ||
         contest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         contest.contestId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contest.contestStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contest.contestStatus
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
         contest.site.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesPlatform = selectedPlatforms.length === 0 || 
+      const matchesPlatform =
+        selectedPlatforms.length === 0 ||
         selectedPlatforms.includes(contest.site);
 
-      const selectedBackendStatuses = selectedStatuses.map(status => statusMapping[status]);
-      const matchesStatus = selectedStatuses.length === 0 || 
+      const selectedBackendStatuses = selectedStatuses.map(
+        (status) => statusMapping[status]
+      );
+      const matchesStatus =
+        selectedStatuses.length === 0 ||
         selectedBackendStatuses.includes(contest.contestStatus);
-      
-      
+
       return matchesSearch && matchesPlatform && matchesStatus;
     });
   }, [allContests, searchQuery, selectedPlatforms, selectedStatuses]);
@@ -137,41 +149,48 @@ const HomePage = ()=> {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-base-200">
-      <div className="relative max-w-7xl mx-auto px-4 py-12">
-
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex mt-10 items-center gap-2 px-4 py-1.5 rounded-full bg-base-300 animate-pulse w-48 h-8 mx-auto mb-6"></div>
-          <div className="h-12 bg-base-300 animate-pulse w-3/4 mx-auto mb-6 rounded-full"></div>
-          <div className="h-6 bg-base-300 animate-pulse w-1/2 mx-auto mb-8 rounded-full"></div>
-        </div>
-
-        <div className="relative max-w-5xl mx-auto mb-12 space-y-6 flex flex-col">
-          <div className="h-14 bg-base-300 animate-pulse rounded-xl w-full"></div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-24"></div>
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
-            <div className="ml-auto h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+        <div className="relative max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex mt-10 items-center gap-2 px-4 py-1.5 rounded-full bg-base-300 animate-pulse w-48 h-8 mx-auto mb-6"></div>
+            <div className="h-12 bg-base-300 animate-pulse w-3/4 mx-auto mb-6 rounded-full"></div>
+            <div className="h-6 bg-base-300 animate-pulse w-1/2 mx-auto mb-8 rounded-full"></div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-24"></div>
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
-            <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
-          </div>
-        </div>
+          <div className="relative max-w-5xl mx-auto mb-12 space-y-6 flex flex-col">
+            <div className="h-14 bg-base-300 animate-pulse rounded-xl w-full"></div>
 
-        <div className={`grid gap-6 ${view === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 max-w-3xl mx-auto"}`}>
-          {Array(6).fill().map((_, index) => (
-            <SkeletonCard key={index} />
-          ))}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-24"></div>
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+              <div className="ml-auto h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-24"></div>
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+              <div className="h-10 bg-base-300 animate-pulse rounded-lg w-28"></div>
+            </div>
+          </div>
+
+          <div
+            className={`grid gap-6 ${
+              view === "grid"
+                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                : "grid-cols-1 max-w-3xl mx-auto"
+            }`}
+          >
+            {Array(6)
+              .fill()
+              .map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+          </div>
         </div>
       </div>
-    </div>
     );
-  };
+  }
 
   console.log("User ", user);
 
@@ -221,7 +240,7 @@ const HomePage = ()=> {
                   placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               />
               {searchInput && (
-                <button 
+                <button
                   onClick={() => {
                     setSearchInput("");
                     setSearchQuery("");
@@ -233,7 +252,7 @@ const HomePage = ()=> {
               )}
             </div>
           </div>
-          
+
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-base-200 rounded-lg">
               <TagIcon className="w-4 h-4" />
@@ -276,9 +295,7 @@ const HomePage = ()=> {
             )}
 
             <div className="ml-auto items-center gap-3 hidden md:flex">
-              <span className="text-sm text-gray-500">
-                 View
-              </span>
+              <span className="text-sm text-gray-500">View</span>
               <div className="flex items-center gap-1 p-1 bg-base-300 rounded-lg ring-1 ring-gray-800">
                 <button
                   onClick={() => setView("grid")}
@@ -303,7 +320,7 @@ const HomePage = ()=> {
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-base-200 rounded-lg">
               <TagIcon className="w-4 h-4" />
@@ -340,13 +357,15 @@ const HomePage = ()=> {
               </button>
             )}
           </div>
-          
-          {(searchQuery || selectedPlatforms.length > 0 || selectedStatuses.length > 0) && (
+
+          {(searchQuery ||
+            selectedPlatforms.length > 0 ||
+            selectedStatuses.length > 0) && (
             <div className="flex items-center justify-between pt-2">
               <div className="text-sm text-gray-400">
                 Found {filteredContests.length} contests
               </div>
-              
+
               <button
                 onClick={clearAllFilters}
                 className="flex items-center gap-1 px-3 py-1.5 text-sm bg-base-300 hover:bg-base-100 rounded-lg transition-colors cursor-pointer"
@@ -377,12 +396,14 @@ const HomePage = ()=> {
         ) : (
           <div className="text-center py-16">
             <div className="text-xl font-medium mb-2">No contests found</div>
-            <p className="text-gray-400">Try adjusting your filters or search query</p>
+            <p className="text-gray-400">
+              Try adjusting your filters or search query
+            </p>
           </div>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;

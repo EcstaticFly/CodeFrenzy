@@ -12,7 +12,6 @@ connectDB();
 import { fetchAndSaveContests } from "./controllers/contestController.js";
 import { updateYoutubeLinks } from "./controllers/youtubeController.js";
 
-
 const app = express();
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
@@ -33,5 +32,5 @@ app.listen(PORT, () => {
     updateYoutubeLinks()
       .then(() => console.log("Initial YouTube sync completed"))
       .catch((err) => console.error("Initial YouTube sync error:", err));
-  }, 25*1000);
+  }, 25 * 1000);
 });

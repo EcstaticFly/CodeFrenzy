@@ -15,7 +15,6 @@ const playlists = {
   Codechef: "PLcXpkI9A-RZIZ6lsE0KCcLWeKNoG45fYr",
 };
 
-
 function formatContestTitle(contestTitle, site) {
   if (site === "Codechef" && contestTitle.startsWith("Starters")) {
     const match = contestTitle.match(/(Starters \d+)/);
@@ -40,10 +39,8 @@ function formatContestTitle(contestTitle, site) {
     }
   }
 
-  return contestTitle;  // Return the original title if no conditions match
+  return contestTitle; // Return the original title if no conditions match
 }
-
-
 
 // Fetch YouTube links
 export const fetchYoutubeLinks = async (contest) => {
@@ -73,7 +70,11 @@ export const fetchYoutubeLinks = async (contest) => {
 
     for (const video of videos) {
       if (
-        video.snippet.title.toLowerCase().includes(formatContestTitle(contest.title, contest.site).toLowerCase())
+        video.snippet.title
+          .toLowerCase()
+          .includes(
+            formatContestTitle(contest.title, contest.site).toLowerCase()
+          )
       ) {
         const videoId = video.snippet.resourceId.videoId;
         console.log(`Video found: ${video.snippet.title} (ID: ${videoId})`);
@@ -113,12 +114,10 @@ export const updateYoutubeLinks = async (req, res) => {
     }
 
     if (res) {
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "YouTube links updated successfully.",
-        });
+      res.status(200).json({
+        success: true,
+        message: "YouTube links updated successfully.",
+      });
     }
   } catch (error) {
     console.error("Error updating YouTube links:", error.message);

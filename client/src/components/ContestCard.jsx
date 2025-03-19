@@ -158,27 +158,35 @@ export default function ContestCard({ contest }) {
                 <pre className="relative ring-1 flex gap-4 items-center justify-start rounded-lg p-4 overflow-hidden text-sm font-mono text-ellipsis whitespace-nowrap">
                   <Link className="size-5" />
                   <p className="text-blue-500 font-semibold truncate">
-                  {contest.url}
+                    {contest.url}
                   </p>
                 </pre>
               </div>
 
               <div
                 className="relative group/code cursor-pointer"
-                onClick={() => contest?.youtubeLink ? window.open(contest?.youtubeLink, "_blank") : null}
+                onClick={() =>
+                  contest?.youtubeLink
+                    ? window.open(contest?.youtubeLink, "_blank")
+                    : null
+                }
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 to-purple-500/5 rounded-lg opacity-0 group-hover/code:opacity-100 transition-all" />
                 <pre className="relative ring-1 flex gap-4 items-center justify-start rounded-lg p-4 overflow-hidden text-sm font-mono text-ellipsis whitespace-nowrap">
                   <PlayCircleIcon className="size-5" />
                   {contest.youtubeLink ? (
-                <p
-                  className="text-blue-500 font-semibold truncate"
-                >
-                  Watch Post-Contest Discussion
-                </p>
-              ) : contest.contestStatus === "FINISHED" ? (
-                <p className="text-gray-400 truncate">No discussion link available yet.</p>
-              ) : <p className="text-gray-400 truncate">Video will be available soon!</p>}
+                    <p className="text-blue-500 font-semibold truncate">
+                      Watch Post-Contest Discussion
+                    </p>
+                  ) : contest.contestStatus === "FINISHED" ? (
+                    <p className="text-gray-400 truncate">
+                      No discussion link available yet.
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 truncate">
+                      Video will be available soon!
+                    </p>
+                  )}
                 </pre>
               </div>
             </div>

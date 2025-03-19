@@ -13,11 +13,13 @@ const BookmarkButton = ({ contestId }) => {
       ? "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20"
       : "bg-gray-500/10 text-gray-400 hover:bg-gray-500/20"
   }`}
-      onClick={()=>bookmarkToggle(contestId)}
+      onClick={() => bookmarkToggle(contestId)}
     >
       <Bookmark
         className={`size-6 ${
-          bookmarks.includes(contestId) ? "fill-yellow-500" : "fill-none hover:fill-gray-500"
+          bookmarks.includes(contestId)
+            ? "fill-yellow-500"
+            : "fill-none hover:fill-gray-500"
         }`}
       />
     </button>

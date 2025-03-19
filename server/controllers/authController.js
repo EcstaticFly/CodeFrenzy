@@ -1,6 +1,6 @@
 import { generateToken } from "../configs/utils.js";
-import User from '../models/user.js';
-import bcrypt from 'bcryptjs';
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 import randomstring from "randomstring";
 import nodemailer from "nodemailer";
 import dotenv, { config } from "dotenv";
@@ -60,22 +60,21 @@ export const login = async (req, res) => {
         .json({ message: "Please provide both email and password" });
     }
     const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: "Invalid Credentials" });
-      }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid Credentials" });
-      }
-      await generateToken(user._id, res);
-      res.status(201).json({
-        _id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        profilePic: user.profilePic,
-        message: "Logged in successfully",
-      });
-    
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
+    await generateToken(user._id, res);
+    res.status(201).json({
+      _id: user._id,
+      email: user.email,
+      fullName: user.fullName,
+      profilePic: user.profilePic,
+      message: "Logged in successfully",
+    });
   } catch (e) {
     console.log(e.message);
     res.status(500).json({
