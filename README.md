@@ -35,6 +35,7 @@ The backend is built with Node.js, Express, and MongoDB, while the frontend is b
 - **Base URL:** `/api/contests`
 - **Endpoints:**
   - `GET /all` - Fetches all upcoming and past contests from Codeforces, CodeChef, and Leetcode.
+  - `POST /addSolution` - Allows admins to add YouTube solution links for contests. Requires admin authentication.
 
 ### Bookmark Routes
 - **Base URL:** `/api/bookmarks`
@@ -48,6 +49,7 @@ The backend is built with Node.js, Express, and MongoDB, while the frontend is b
 - **Home Page:** Displays a list of upcoming and past contests with filtering and bookmarking options.
 - **Profile Page (Bookmarks):** Shows all bookmarked contests of the user.
 - **Register & Login Pages:** Provides authentication features with JWT-based login.
+- **AddSolution Page (Admin Only):** Allows admins to add YouTube solution links for past contests. Accessible via a button on each contest card (if user is an admin).
 - **Contest Details Page:** Displays contest details with attached YouTube links (if available).
 
 ### API Interfaces (Backend)
@@ -68,6 +70,11 @@ The backend is built with Node.js, Express, and MongoDB, while the frontend is b
 - **Contest Fetching:** Fetching contest data every 2 hours via cron jobs.
 
 ### Page Interfaces
+
+#### AddSolution Page (Admin Only)
+- Allows admins to add YouTube solution links for past contests.
+- Accessible via a button on each contest card if the user is an admin.
+- Sends a POST request to `/api/contests/addSolution` to save the YouTube link.
 
 #### Home Page
 - Displays a list of contests.
@@ -122,15 +129,22 @@ interface User {
 
 ## 5. Configuration and Setup
 ### Environment Variables
+#### Backend
 Create a `.env` file in the root of your backend directory and add the following:
 ```
 MONGODB_URL=your_mongodb_url
-CORS_ORIGIN=your_frontend_url
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret
 MAIL_USER=your_email_user
 SECRET_PASSWORD=your_email_app_password
 YOUTUBE_API_KEY=your_youtube_api_key
+ADMIN_EMAILS=admin1@example.com,admin2@example.com
+```
+
+#### Frontend
+Create a `.env` file in the root of your frontend directory and add the following:
+```
+VITE_ADMIN_EMAILS=admin1@example.com,admin2@example.com
 ```
 
 ### Installation

@@ -4,6 +4,14 @@ import { toast } from "react-toastify";
 
 const BASE_URL = "http://localhost:5000";
 
+const clearFilters = () => {
+  localStorage.removeItem("contestSearchInput");
+  localStorage.removeItem("contestSearchQuery");
+  localStorage.removeItem("contestSelectedPlatforms");
+  localStorage.removeItem("contestSelectedStatuses");
+  localStorage.removeItem("contestView");
+};
+
 export const authStore = create((set, get) => ({
   user: null,
   isLoggingIn: false,
@@ -55,6 +63,7 @@ export const authStore = create((set, get) => ({
       const response = await axiosInstance.post("/auth/logout");
       toast.success(response.data.message);
       set({ user: null });
+      clearFilters();
     } catch (e) {
       console.log(e);
       toast.error(e.response.data.message);

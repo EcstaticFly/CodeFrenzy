@@ -37,10 +37,10 @@ const RegisterPage = () => {
   const handleOtpVerification = async () => {
     const givenOTP = otp.join("");
     const result = await verifyOtp(formData, givenOTP);
-    if (result.message === "OTP verified successfully") {
+    if (result.success) {
       register(formData);
     } else {
-      toast.error(result.message);
+      toast.error("OTP verification failed");
     }
     setOtp(["", "", "", "", "", ""]);
   };
@@ -237,20 +237,21 @@ const RegisterPage = () => {
                 Valid for 5 mins only
               </p>
               <div className="modal-action flex justify-center">
-                <form method="dialog">
-                  <button
-                    className="btn mr-3 btn-error text-xs sm:text-sm md:text-base"
-                    onClick={() => setOtp(["", "", "", "", "", ""])}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="btn btn-success text-xs sm:text-sm md:text-base"
-                    onClick={handleOtpVerification}
-                  >
-                    Proceed
-                  </button>
-                </form>
+                <button
+                  className="btn mr-3 btn-error text-xs sm:text-sm md:text-base"
+                  onClick={() => {
+                    setOtp(["", "", "", "", "", ""]);
+                    document.getElementById("otp_modal").close(); // Close the dialog properly
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  className="btn btn-success text-xs sm:text-sm md:text-base"
+                  onClick={handleOtpVerification}
+                >
+                  Proceed
+                </button>
               </div>
             </form>
           </div>

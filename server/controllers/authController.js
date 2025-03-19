@@ -192,7 +192,7 @@ export const verifyOtp = async (req, res) => {
     return res
       .status(200)
       .clearCookie("otpCache")
-      .json({ message: "OTP verified successfully" });
+      .json({ success: true, message: "OTP verified successfully" });
   } else {
     return res.status(400).json({ message: "Invalid OTP" });
   }

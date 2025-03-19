@@ -11,11 +11,14 @@ import {
 import { authStore } from "../store/authStore";
 import { convertToIST } from "../configs/utils";
 import BookmarkButton from "./BookmarkButton";
-const now = new Date();
+import { useNavigate } from "react-router-dom";
+
+const adminEmails = import.meta.env.VITE_ADMIN_EMAILS.split(",");
 
 export default function ContestCard({ contest }) {
   const { user } = authStore();
   const [timeRemaining, setTimeRemaining] = useState("");
+  const navigate = useNavigate();
 
   const calculateTimeRemaining = () => {
     const now = new Date();
@@ -60,6 +63,17 @@ export default function ContestCard({ contest }) {
 
     return () => clearInterval(timer);
   }, [contest.startTime, contest.contestStatus]);
+
+  const handleClick = () => {
+    if (contest?.youtubeLink) {
+      window.open(contest?.youtubeLink, "_blank");
+    } else if (
+      contest.contestStatus === "FINISHED" &&
+      adminEmails.includes(user?.email)
+    ) {
+      navigate("/addSolution", { state: { contest } });
+    }
+  };
 
   return (
     <motion.div
@@ -107,7 +121,7 @@ export default function ContestCard({ contest }) {
                 </div>
               </div>
               <div
-                className="absolute top-6 right-6 z-10 flex gap-4 items-center border rounded-lg cursor-pointer"
+                className="absolute top-6 right-6 z-10 flex gap-2 items-center border rounded-lg cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <BookmarkButton contestId={contest.contestId} />
@@ -165,11 +179,7 @@ export default function ContestCard({ contest }) {
 
               <div
                 className="relative group/code cursor-pointer"
-                onClick={() =>
-                  contest?.youtubeLink
-                    ? window.open(contest?.youtubeLink, "_blank")
-                    : null
-                }
+                onClick={handleClick}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 to-purple-500/5 rounded-lg opacity-0 group-hover/code:opacity-100 transition-all" />
                 <pre className="relative ring-1 flex gap-4 items-center justify-start rounded-lg p-4 overflow-hidden text-sm font-mono text-ellipsis whitespace-nowrap">
@@ -179,9 +189,18 @@ export default function ContestCard({ contest }) {
                       Watch Post-Contest Discussion
                     </p>
                   ) : contest.contestStatus === "FINISHED" ? (
-                    <p className="text-gray-400 truncate">
-                      No discussion link available yet.
-                    </p>
+                    adminEmails.includes(user?.email) ? (
+                      <div
+                        className="w-full h-full"
+                        // onClick={() => navigate("/addSolution", { state: { contest } })}
+                      >
+                        Add Solution
+                      </div>
+                    ) : (
+                      <p className="text-gray-400 truncate">
+                        No discussion link available yet.
+                      </p>
+                    )
                   ) : (
                     <p className="text-gray-400 truncate">
                       Video will be available soon!

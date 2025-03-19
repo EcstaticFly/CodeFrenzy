@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { axiosInstance } from "../configs/axios.js";
 import { toast } from "react-toastify";
 import { authStore } from "./authStore.js";
-
 const BASE_URL = "http://localhost:5000";
 
 export const contestStore = create((set, get) => ({
   allContests: [],
   bookmarks: [],
   isLoading: false,
+  isAddingSolution: false,
 
   getAllContests: async () => {
     set({ isLoading: true });
@@ -69,6 +69,24 @@ export const contestStore = create((set, get) => ({
         console.log("Error bookmarking contest: ", e);
         toast.error("Error bookmarking contest");
       }
+    }
+  },
+
+  addSolution: async (userEmail, contestId, youtubeLink, navigate) => {
+    set({ isAddingSolution: true });
+    try {
+      const response = await axiosInstance.post("/contests/addSolution", {
+        userEmail,
+        contestId,
+        youtubeLink,
+      });
+      toast.success(response.data.message);
+      navigate("/");
+    } catch (e) {
+      console.log("Error adding solution: ", e);
+      toast.error(e.response.data.message);
+    } finally {
+      set({ isAddingSolution: false });
     }
   },
 }));

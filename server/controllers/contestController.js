@@ -162,6 +162,27 @@ export const getAllContests = async (req, res) => {
   }
 };
 
+export const addSolution = async (req, res) => {
+  try {
+    const { contestId, youtubeLink } = req.body;
+    if (!contestId || !youtubeLink) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    const contest = await Contest.findOne({ contestId });
+    if (!contest) return res.status(404).send("Contest not found");
+
+    contest.youtubeLink = youtubeLink;
+    await contest.save();
+
+    res.status(200).json({ message: "YouTube link added successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
 // Schedule fetching contests every 2 hours
 setInterval(() => {
   console.log("Fetching Contests from Codechef, Codeforces and Leetcode.");

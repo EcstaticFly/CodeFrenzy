@@ -8,6 +8,9 @@ import ProfilePage from "./pages/Profile";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import SkeletonCard from "./components/SkeletonCard";
+import AddSolution from "./pages/AddSolution";
+
+const adminEmails = import.meta.env.VITE_ADMIN_EMAILS.split(",");
 
 function App() {
   const { theme } = themeStore();
@@ -76,6 +79,16 @@ function App() {
         <Route
           path="/profile"
           element={user ? <ProfilePage /> : <Navigate to="/register" />}
+        />
+        <Route
+          path="/addSolution"
+          element={
+            user && adminEmails.includes(user?.email) ? (
+              <AddSolution />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
         />
         <Route
           path="*"
