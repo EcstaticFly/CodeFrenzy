@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { authStore } from "../store/authStore.js";
 import ContestCard from "../components/ContestCard.jsx";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +16,18 @@ const generateRandomColor = (name) => {
 
 const ProfilePage = () => {
   const { user } = authStore();
-  const { bookmarks, allContests } = contestStore();
+  const { bookmarks, allContests, getAllContests, fetchBookmarks } = contestStore();
   const bookMarkedContests = allContests.filter((contest) =>
     bookmarks.includes(contest.contestId)
   );
   const navigate = useNavigate();
+  useEffect(()=>{
+    fetchBookmarks();
+  },[]);
+
+  useEffect(()=>{
+    getAllContests();
+  },[]);
 
   const firstLetter =
     (user && user.fullName && user.fullName.charAt(0).toUpperCase()) || "?";
