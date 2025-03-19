@@ -173,7 +173,7 @@ For any inquiries or collaboration, you can reach me at: [Suyash Pandey](mailto:
 - Description: Contains the full codebase for the CodeFrenzy project, including both frontend and backend implementations.
 
 ## 10. Video Link
-- [Video Demo](<Provide Video Link Here>)
+- [Video Demo](https://drive.google.com/file/d/1dM7WptmwmyTSEH6NZzLa1D-J5NSmdE7J/view?usp=sharing)
 
 ---
 
