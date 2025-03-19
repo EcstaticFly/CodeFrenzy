@@ -1,0 +1,28 @@
+# Ignore node modules & npm logs
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Ignore environment variables
+.env
+.env.local
+.env.test
+.env.
+.env.example
+
+# Ignore build output
+dist
+
+# Ignore local development files
+.vscode/
+.idea/
+.DS_Store
+
+# Ignore Docker files if not needed in the image
+Dockerfile
+.dockerignore
+
+# Ignore git folder
+.git
+.gitignore

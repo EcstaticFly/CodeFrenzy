@@ -1,0 +1,40 @@
+services:
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    networks:
+      - CodeFrenzy-network
+    depends_on:
+      - database
+
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./client/.env
+    networks:
+      - CodeFrenzy-network
+
+  database:
+    image: mongo:8.0.3
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./server/.env
+    networks:
+      - CodeFrenzy-network
+    volumes:
+      - mongo-data:/data/database
+    command: ["mongod", "--logpath", "/dev/null", "--quiet"]
+
+networks:
+  CodeFrenzy-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
