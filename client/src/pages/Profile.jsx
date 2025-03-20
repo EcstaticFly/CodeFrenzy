@@ -3,6 +3,7 @@ import { authStore } from "../store/authStore.js";
 import ContestCard from "../components/ContestCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { contestStore } from "../store/contestStore.js";
+import ProfilePageSkeleton from "../components/ProfilePageSkeleton.jsx"
 
 const generateRandomColor = (name) => {
   if (!name || typeof name !== "string" || name.length === 0) {
@@ -16,7 +17,7 @@ const generateRandomColor = (name) => {
 
 const ProfilePage = () => {
   const { user } = authStore();
-  const { bookmarks, allContests, getAllContests, fetchBookmarks } = contestStore();
+  const { bookmarks, allContests, getAllContests, fetchBookmarks, isLoading } = contestStore();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
 
@@ -64,6 +65,12 @@ const ProfilePage = () => {
   };
 
   const activeBookmarks = getActiveBookmarks();
+
+  if(isLoading){
+    return (
+      <ProfilePageSkeleton />
+    );
+  }
 
   return (
     <div className="max-w-4xl min-h-screen mx-auto p-6 mt-16">
