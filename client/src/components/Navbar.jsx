@@ -4,10 +4,12 @@ import { authStore } from "../store/authStore";
 import { themeStore } from "../store/themeStore";
 import { contestStore } from "../store/contestStore";
 
+const adminEmails = import.meta.env.VITE_ADMIN_EMAILS.split(",");
+
 export default function Navbar() {
   const { user, logout } = authStore();
   const { theme, setTheme } = themeStore();
-    const { getAllContests, fetchBookmarks } = contestStore();
+  const { getAllContests, fetchBookmarks } = contestStore();
 
   //For manual refresh(Not sure, if i should let it be or remove it)
   const handleRefresh = () => {
@@ -56,15 +58,15 @@ export default function Navbar() {
               </span>
             </div>
 
+            {user && adminEmails.includes(user?.email) && (
+              <div className="btn btn-sm gap-2" onClick={handleRefresh}>
+                <RefreshCw className="size-4" />
+                <span className="hidden sm:inline">Refresh</span>
+              </div>
+            )}
+
             {user ? (
               <>
-                <div
-              className="btn btn-sm gap-2"
-              onClick={handleRefresh}
-            >
-              <RefreshCw className="size-4" />
-              <span className="hidden sm:inline">Refresh</span>
-            </div>
                 <Link to="/profile" className="btn btn-sm gap-2">
                   <User className="size-5" />
                   <span className="hidden sm:inline">Profile</span>

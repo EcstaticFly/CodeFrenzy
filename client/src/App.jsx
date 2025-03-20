@@ -22,7 +22,7 @@ function App() {
 
   if (isLoading && !user) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div data-theme={theme} className="flex bg-base-200 flex-col items-center justify-center h-screen">
         <LoaderCircle className="size-10 mb-3 animate-spin" />
         <h1 className="font-extralight tracking-wider">Please Wait...</h1>
       </div>

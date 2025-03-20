@@ -192,7 +192,6 @@ export default function ContestCard({ contest }) {
                     adminEmails.includes(user?.email) ? (
                       <div
                         className="w-full h-full"
-                        // onClick={() => navigate("/addSolution", { state: { contest } })}
                       >
                         Add Solution
                       </div>
