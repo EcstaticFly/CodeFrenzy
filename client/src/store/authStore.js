@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../configs/axios.js";
 import { toast } from "react-toastify";
+import { contestStore } from "./contestStore.js";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -50,6 +51,9 @@ export const authStore = create((set, get) => ({
       const response = await axiosInstance.post("/auth/login", formData);
       set({ user: response.data });
       toast.success(response.data.message);
+
+      const { fetchBookmarks } = contestStore.getState();
+      fetchBookmarks(true);
     } catch (e) {
       console.log(e);
       toast.error(e.response.data.message);
@@ -64,6 +68,9 @@ export const authStore = create((set, get) => ({
       toast.success(response.data.message);
       set({ user: null });
       clearFilters();
+
+      const { clearCache } = contestStore.getState();
+      clearCache();
     } catch (e) {
       console.log(e);
       toast.error(e.response.data.message);

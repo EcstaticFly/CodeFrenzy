@@ -41,23 +41,20 @@ const HomePage = () => {
   });
 
   const { user } = authStore();
-  const { getAllContests, allContests, isLoading, fetchBookmarks } =
-    contestStore();
+  const { getAllContests, allContests, isLoading, fetchBookmarks } = contestStore();
 
   useEffect(() => {
     getAllContests();
-  }, []);
 
-  useEffect(() => {
-    fetchBookmarks();
-  }, []);
+    if (user && user._id) {
+      fetchBookmarks();
+    }
+  }, [user?._id]);
 
-  // Save searchInput to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("contestSearchInput", searchInput);
   }, [searchInput]);
 
-  // Save searchQuery to localStorage and handle debouncing
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(searchInput);
@@ -67,7 +64,6 @@ const HomePage = () => {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Save selectedPlatforms to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem(
       "contestSelectedPlatforms",
@@ -75,7 +71,6 @@ const HomePage = () => {
     );
   }, [selectedPlatforms]);
 
-  // Save selectedStatuses to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem(
       "contestSelectedStatuses",
@@ -83,7 +78,6 @@ const HomePage = () => {
     );
   }, [selectedStatuses]);
 
-  // Save view to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("contestView", view);
   }, [view]);
@@ -113,7 +107,6 @@ const HomePage = () => {
     setSearchQuery("");
     setSelectedPlatforms([]);
     setSelectedStatuses([]);
-    // Clear localStorage items related to filters
     localStorage.removeItem("contestSearchInput");
     localStorage.removeItem("contestSearchQuery");
     localStorage.removeItem("contestSelectedPlatforms");
@@ -122,25 +115,28 @@ const HomePage = () => {
 
   const filteredContests = useMemo(() => {
     return allContests.filter((contest) => {
+      const title = contest?.title || "";
+      const contestId = contest?.contestId || "";
+      const contestStatus = contest?.contestStatus || "";
+      const site = contest?.site || "";
+
       const matchesSearch =
         searchQuery === "" ||
-        contest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contest.contestId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contest.contestStatus
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        contest.site.toLowerCase().includes(searchQuery.toLowerCase());
+        title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contestId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contestStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        site.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesPlatform =
         selectedPlatforms.length === 0 ||
-        selectedPlatforms.includes(contest.site);
+        selectedPlatforms.includes(site);
 
       const selectedBackendStatuses = selectedStatuses.map(
         (status) => statusMapping[status]
       );
       const matchesStatus =
         selectedStatuses.length === 0 ||
-        selectedBackendStatuses.includes(contest.contestStatus);
+        selectedBackendStatuses.includes(contestStatus);
 
       return matchesSearch && matchesPlatform && matchesStatus;
     });

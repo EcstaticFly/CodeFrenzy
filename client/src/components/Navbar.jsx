@@ -1,11 +1,22 @@
-import { Code2, LogOut, Moon, SunMedium, User } from "lucide-react";
+import { Code2, LogOut, Moon, RefreshCw, SunMedium, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { authStore } from "../store/authStore";
 import { themeStore } from "../store/themeStore";
+import { contestStore } from "../store/contestStore";
 
 export default function Navbar() {
   const { user, logout } = authStore();
   const { theme, setTheme } = themeStore();
+    const { getAllContests, fetchBookmarks } = contestStore();
+
+  //For manual refresh
+  const handleRefresh = () => {
+    getAllContests(true); //Force refresh
+    if (user && user._id) {
+      fetchBookmarks(true); //Force refresh
+    }
+  };
+
   return (
     <header
       className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -22,7 +33,7 @@ export default function Navbar() {
                   alt="CodeFrenzy logo"
                 />
               </div>
-              <h1 className="text-lg font-bold hidden min-[290px]:block">
+              <h1 className="text-lg font-bold hidden min-[360px]:block">
                 CodeFrenzy
               </h1>
             </Link>
@@ -47,6 +58,13 @@ export default function Navbar() {
 
             {user ? (
               <>
+                <div
+              className="btn btn-sm gap-2"
+              onClick={handleRefresh}
+            >
+              <RefreshCw className="size-4" />
+              <span className="hidden sm:inline">Refresh</span>
+            </div>
                 <Link to="/profile" className="btn btn-sm gap-2">
                   <User className="size-5" />
                   <span className="hidden sm:inline">Profile</span>

@@ -58,7 +58,7 @@ export const fetchYoutubeLinks = async (contest) => {
     const response = await youtube.playlistItems.list({
       part: "snippet",
       playlistId,
-      maxResults: 70,
+      maxResults: 150,
     });
 
     if (!response.data.items) {
