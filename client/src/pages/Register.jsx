@@ -45,6 +45,11 @@ const RegisterPage = () => {
     setOtp(["", "", "", "", "", ""]);
   };
 
+  const handleOtpFormSubmit = (e) => {
+    e.preventDefault();
+    handleOtpVerification();
+  };
+
   function validateEmailDomain(email) {
     const gmailRegex = /^[^@]+@gmail\.com$/;
 
@@ -218,7 +223,7 @@ const RegisterPage = () => {
                 Please enter the 6 digit OTP sent to your email ID
               </p>
             </div>
-            <form>
+            <form onSubmit={handleOtpFormSubmit}>
               <div className="flex justify-center gap-1 sm:gap-2 mb-4 sm:mb-6">
                 {[...Array(6)].map((_, index) => (
                   <input
@@ -243,12 +248,13 @@ const RegisterPage = () => {
                     setOtp(["", "", "", "", "", ""]);
                     document.getElementById("otp_modal").close(); // Close the dialog properly
                   }}
+                  type="button"
                 >
                   Close
                 </button>
                 <button
                   className="btn btn-success text-xs sm:text-sm md:text-base"
-                  onClick={handleOtpVerification}
+                  type="submit"
                 >
                   Proceed
                 </button>
