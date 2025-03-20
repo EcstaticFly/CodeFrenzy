@@ -9,7 +9,7 @@ export default function Navbar() {
   const { theme, setTheme } = themeStore();
     const { getAllContests, fetchBookmarks } = contestStore();
 
-  //For manual refresh
+  //For manual refresh(Not sure, if i should let it be or remove it)
   const handleRefresh = () => {
     getAllContests(true); //Force refresh
     if (user && user._id) {
