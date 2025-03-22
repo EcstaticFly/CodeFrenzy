@@ -76,7 +76,7 @@ const RegisterPage = () => {
       return false;
     }
     if (!validateEmailDomain(formData.email)) {
-      toast.error("Only Gmail, yahoo and iiitranchi emails allowed");
+      toast.error("Only Gmail and yahoo emails allowed");
       return false;
     }
 
