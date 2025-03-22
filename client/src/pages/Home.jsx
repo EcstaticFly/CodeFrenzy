@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 import { authStore } from "../store/authStore.js";
 import ContestCard from "../components/ContestCard.jsx";
 import {
@@ -20,6 +20,44 @@ const statusMapping = {
   Upcoming: "UPCOMING",
 };
 
+// Animation variants for smoother transitions
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.9,
+    y: 20,
+  },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.9,
+    y: -10,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
 const HomePage = () => {
   // Initialize state from localStorage or default values
   const [searchInput, setSearchInput] = useState(() => {
@@ -28,6 +66,7 @@ const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem("contestSearchQuery") || "";
   });
+  const [debouncedSearching, setDebouncedSearching] = useState(false);
   const [selectedPlatforms, setSelectedPlatforms] = useState(() => {
     const stored = localStorage.getItem("contestSelectedPlatforms");
     return stored ? JSON.parse(stored) : [];
@@ -39,9 +78,11 @@ const HomePage = () => {
   const [view, setView] = useState(() => {
     return localStorage.getItem("contestView") || "grid";
   });
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const { user } = authStore();
-  const { getAllContests, allContests, isLoading, fetchBookmarks } = contestStore();
+  const { getAllContests, allContests, isLoading, fetchBookmarks } =
+    contestStore();
 
   useEffect(() => {
     getAllContests();
@@ -56,26 +97,42 @@ const HomePage = () => {
   }, [searchInput]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchQuery(searchInput);
-      localStorage.setItem("contestSearchQuery", searchInput);
-    }, 300);
+    localStorage.setItem("contestSearchInput", searchInput);
 
-    return () => clearTimeout(timer);
+    // Don't update searchQuery until typing pauses
+    if (searchInput.length > 0) {
+      setDebouncedSearching(true);
+
+      const debounceTimer = setTimeout(() => {
+        setSearchQuery(searchInput);
+        localStorage.setItem("contestSearchQuery", searchInput);
+        setDebouncedSearching(false);
+      }, 500);
+
+      return () => clearTimeout(debounceTimer);
+    } else {
+      setSearchQuery("");
+      localStorage.setItem("contestSearchQuery", "");
+      setDebouncedSearching(false);
+    }
   }, [searchInput]);
 
   useEffect(() => {
+    setIsFiltering(true);
     localStorage.setItem(
       "contestSelectedPlatforms",
       JSON.stringify(selectedPlatforms)
     );
+    setTimeout(() => setIsFiltering(false), 100);
   }, [selectedPlatforms]);
 
   useEffect(() => {
+    setIsFiltering(true);
     localStorage.setItem(
       "contestSelectedStatuses",
       JSON.stringify(selectedStatuses)
     );
+    setTimeout(() => setIsFiltering(false), 100);
   }, [selectedStatuses]);
 
   useEffect(() => {
@@ -83,6 +140,7 @@ const HomePage = () => {
   }, [view]);
 
   const togglePlatform = (platform) => {
+    setIsFiltering(true);
     setSelectedPlatforms((prev) => {
       if (prev.includes(platform)) {
         return prev.filter((p) => p !== platform);
@@ -93,6 +151,7 @@ const HomePage = () => {
   };
 
   const toggleStatus = (status) => {
+    setIsFiltering(true);
     setSelectedStatuses((prev) => {
       if (prev.includes(status)) {
         return prev.filter((s) => s !== status);
@@ -103,6 +162,7 @@ const HomePage = () => {
   };
 
   const clearAllFilters = () => {
+    setIsFiltering(true);
     setSearchInput("");
     setSearchQuery("");
     setSelectedPlatforms([]);
@@ -111,6 +171,7 @@ const HomePage = () => {
     localStorage.removeItem("contestSearchQuery");
     localStorage.removeItem("contestSelectedPlatforms");
     localStorage.removeItem("contestSelectedStatuses");
+    setTimeout(() => setIsFiltering(false), 100);
   };
 
   const filteredContests = useMemo(() => {
@@ -128,8 +189,7 @@ const HomePage = () => {
         site.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesPlatform =
-        selectedPlatforms.length === 0 ||
-        selectedPlatforms.includes(site);
+        selectedPlatforms.length === 0 || selectedPlatforms.includes(site);
 
       const selectedBackendStatuses = selectedStatuses.map(
         (status) => statusMapping[status]
@@ -188,8 +248,6 @@ const HomePage = () => {
     );
   }
 
-  console.log("User ", user);
-
   return (
     <div className="min-h-screen bg-base-200">
       <div className="relative max-w-7xl mx-auto px-4 py-12">
@@ -225,7 +283,11 @@ const HomePage = () => {
           <div className="relative group">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <div className="relative flex items-center">
-              <SearchIcon className="absolute left-4 w-5 h-5" />
+              {debouncedSearching ? (
+                <div className="absolute left-4 w-5 h-5 animate-spin rounded-full border-2 border-t-transparent border-blue-500" />
+              ) : (
+                <SearchIcon className="absolute left-4 w-5 h-5" />
+              )}
               <input
                 type="text"
                 value={searchInput}
@@ -256,9 +318,10 @@ const HomePage = () => {
             </div>
 
             {platforms.map((platform) => (
-              <button
+              <motion.button
                 key={platform}
                 onClick={() => togglePlatform(platform)}
+                whileTap={{ scale: 0.95 }}
                 className={`
                     group relative px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer
                     ring
@@ -277,23 +340,28 @@ const HomePage = () => {
                   />
                   <span className="text-sm">{platform}</span>
                 </div>
-              </button>
+              </motion.button>
             ))}
 
             {selectedPlatforms.length > 0 && (
-              <button
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedPlatforms([])}
                 className="flex items-center gap-1 px-2 py-1 text-xs hover:text-gray-500 transition-colors cursor-pointer hover:ring-1 hover:rounded-lg"
               >
                 <X className="size-3" />
                 Clear
-              </button>
+              </motion.button>
             )}
 
             <div className="ml-auto items-center gap-3 hidden md:flex">
               <span className="text-sm text-gray-500">View</span>
               <div className="flex items-center gap-1 p-1 bg-base-300 rounded-lg ring-1 ring-gray-800">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setView("grid")}
                   className={`p-2 rounded-md transition-all ${
                     view === "grid"
@@ -302,8 +370,9 @@ const HomePage = () => {
                   }`}
                 >
                   <GridIcon className="w-4 h-4" />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setView("list")}
                   className={`p-2 rounded-md transition-all ${
                     view === "list"
@@ -312,7 +381,7 @@ const HomePage = () => {
                   }`}
                 >
                   <LayersIcon className="w-4 h-4" />
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>
@@ -324,9 +393,10 @@ const HomePage = () => {
             </div>
 
             {contestStatus.map((status) => (
-              <button
+              <motion.button
                 key={status}
                 onClick={() => toggleStatus(status)}
+                whileTap={{ scale: 0.95 }}
                 className={`
                     group relative px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer
                     ring
@@ -340,63 +410,85 @@ const HomePage = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{status}</span>
                 </div>
-              </button>
+              </motion.button>
             ))}
 
             {selectedStatuses.length > 0 && (
-              <button
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedStatuses([])}
                 className="flex items-center gap-1 px-2 py-1 text-xs hover:text-gray-500 transition-colors cursor-pointer hover:ring-1 hover:rounded-lg"
               >
                 <X className="size-3" />
                 Clear
-              </button>
+              </motion.button>
             )}
           </div>
 
           {(searchQuery ||
             selectedPlatforms.length > 0 ||
             selectedStatuses.length > 0) && (
-            <div className="flex items-center justify-between pt-2">
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="flex items-center justify-between pt-2"
+            >
               <div className="text-sm text-gray-400">
                 Found {filteredContests.length} contests
               </div>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 onClick={clearAllFilters}
                 className="flex items-center gap-1 px-3 py-1.5 text-sm bg-base-300 hover:bg-base-100 rounded-lg transition-colors cursor-pointer"
               >
                 <X className="size-4" />
                 Clear all filters
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           )}
         </div>
 
-        {filteredContests.length > 0 ? (
-          <motion.div
-            className={`grid gap-6 
-              ${
-                view === "grid"
-                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                  : "grid-cols-1 max-w-3xl mx-auto"
-              }`}
-            layout
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredContests.map((contest) => (
-                <ContestCard key={contest.contestId} contest={contest} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        ) : (
-          <div className="text-center py-16">
-            <div className="text-xl font-medium mb-2">No contests found</div>
-            <p className="text-gray-400">
-              Try adjusting your filters or search query
-            </p>
-          </div>
-        )}
+        <LayoutGroup>
+          {filteredContests.length > 0 ? (
+            <div
+              className={`grid gap-6 
+      ${
+        view === "grid"
+          ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          : "grid-cols-1 max-w-3xl mx-auto"
+      }`}
+            >
+              <AnimatePresence mode="sync">
+                {filteredContests.map((contest) => (
+                  <motion.div
+                    key={contest.contestId}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.15,
+                      ease: "easeOut",
+                    }}
+                  >
+                    <ContestCard contest={contest} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="text-xl font-medium mb-2">No contests found</div>
+              <p className="text-gray-400">
+                Try adjusting your filters or search query
+              </p>
+            </div>
+          )}
+        </LayoutGroup>
       </div>
     </div>
   );

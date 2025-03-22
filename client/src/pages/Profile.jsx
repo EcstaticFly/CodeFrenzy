@@ -3,7 +3,7 @@ import { authStore } from "../store/authStore.js";
 import ContestCard from "../components/ContestCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { contestStore } from "../store/contestStore.js";
-import ProfilePageSkeleton from "../components/ProfilePageSkeleton.jsx"
+import ProfilePageSkeleton from "../components/ProfilePageSkeleton.jsx";
 
 const generateRandomColor = (name) => {
   if (!name || typeof name !== "string" || name.length === 0) {
@@ -17,7 +17,8 @@ const generateRandomColor = (name) => {
 
 const ProfilePage = () => {
   const { user } = authStore();
-  const { bookmarks, allContests, getAllContests, fetchBookmarks, isLoading } = contestStore();
+  const { bookmarks, allContests, getAllContests, fetchBookmarks, isLoading } =
+    contestStore();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
 
@@ -26,7 +27,8 @@ const ProfilePage = () => {
     getAllContests();
   }, []);
 
-  const firstLetter = (user && user.fullName && user.fullName.charAt(0).toUpperCase()) || "?";
+  const firstLetter =
+    (user && user.fullName && user.fullName.charAt(0).toUpperCase()) || "?";
   const avatarColor = generateRandomColor(user?.fullName);
 
   const bookMarkedContests = allContests.filter((contest) =>
@@ -43,9 +45,9 @@ const ProfilePage = () => {
     (contest) => contest.site.toLowerCase() === "codechef"
   );
   const otherBookmarks = bookMarkedContests.filter(
-    (contest) => 
-      contest.site.toLowerCase() !== "leetcode" && 
-      contest.site.toLowerCase() !== "codeforces" && 
+    (contest) =>
+      contest.site.toLowerCase() !== "leetcode" &&
+      contest.site.toLowerCase() !== "codeforces" &&
       contest.site.toLowerCase() !== "codechef"
   );
 
@@ -66,10 +68,8 @@ const ProfilePage = () => {
 
   const activeBookmarks = getActiveBookmarks();
 
-  if(isLoading){
-    return (
-      <ProfilePageSkeleton />
-    );
+  if (isLoading) {
+    return <ProfilePageSkeleton />;
   }
 
   return (
@@ -110,26 +110,34 @@ const ProfilePage = () => {
                   All ({bookMarkedContests.length})
                 </button>
                 <button
-                  className={`tab ${activeTab === "leetcode" ? "tab-active" : ""}`}
+                  className={`tab ${
+                    activeTab === "leetcode" ? "tab-active" : ""
+                  }`}
                   onClick={() => setActiveTab("leetcode")}
                 >
                   LeetCode ({leetcodeBookmarks.length})
                 </button>
                 <button
-                  className={`tab ${activeTab === "codeforces" ? "tab-active" : ""}`}
+                  className={`tab ${
+                    activeTab === "codeforces" ? "tab-active" : ""
+                  }`}
                   onClick={() => setActiveTab("codeforces")}
                 >
                   CodeForces ({codeforcesBookmarks.length})
                 </button>
                 <button
-                  className={`tab ${activeTab === "codechef" ? "tab-active" : ""}`}
+                  className={`tab ${
+                    activeTab === "codechef" ? "tab-active" : ""
+                  }`}
                   onClick={() => setActiveTab("codechef")}
                 >
                   CodeChef ({codechefBookmarks.length})
                 </button>
                 {otherBookmarks.length > 0 && (
                   <button
-                    className={`tab ${activeTab === "others" ? "tab-active" : ""}`}
+                    className={`tab ${
+                      activeTab === "others" ? "tab-active" : ""
+                    }`}
                     onClick={() => setActiveTab("others")}
                   >
                     Others ({otherBookmarks.length})
@@ -156,9 +164,7 @@ const ProfilePage = () => {
             onClick={() => navigate("/")}
           >
             <p className="">No bookmarks found</p>
-            <button
-              className="mt-4 bg-blue-500 px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
-            >
+            <button className="mt-4 bg-blue-500 px-4 py-2 rounded cursor-pointer hover:bg-blue-600">
               Add your first bookmark
             </button>
           </div>
