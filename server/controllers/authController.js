@@ -50,7 +50,6 @@ export const register = async (req, res) => {
   }
 };
 
-// Login User
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -83,12 +82,16 @@ export const login = async (req, res) => {
   }
 };
 
-// Logout User
 export const logout = (req, res) => {
   try {
-    res.clearCookie("token").status(200).json({
-      message: "Logged out successfully!",
+    res.cookie("token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 0,
+      path: "/",
     });
+    res.json({ message: "Logout successful" });
   } catch (e) {
     console.log(e.message);
     res.status(500).json({
@@ -120,9 +123,8 @@ async function sendOtp(email, otp) {
       from: "otp.shopex@gmail.com",
       to: email,
       subject: "Otp verification",
-      text: `Your Shopex Otp for verification is ${otp}. DO NOT share it with anyone.`,
+      text: `Your CodeFrenzy Otp for verification is ${otp}. DO NOT share it with anyone.`,
     };
-    // console.log("h1");
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -133,13 +135,11 @@ async function sendOtp(email, otp) {
         rejectUnauthorized: false,
       },
     });
-    // console.log("h2");
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) console.log("Error occured: ", error);
       else console.log("OTP sent successfully: ", info.response);
     });
-    // console.log("h3");
     return true;
   } catch (e) {
     console.log("Otp sending fail.");
@@ -154,7 +154,6 @@ export const getOtp = async (req, res) => {
     otpCache[email] = await bcrypt.hash(otp, 10);
 
     const result = await sendOtp(email, otp);
-    // console.log(email, otp);
     if (result) {
       res.cookie("otpCache", otpCache, {
         maxAge: 300000,
