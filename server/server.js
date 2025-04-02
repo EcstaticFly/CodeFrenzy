@@ -13,7 +13,7 @@ import { fetchAndSaveContests } from "./controllers/contestController.js";
 import { updateYoutubeLinks } from "./controllers/youtubeController.js";
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_BASE_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

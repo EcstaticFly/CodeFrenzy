@@ -3,7 +3,6 @@ import { axiosInstance } from "../configs/axios.js";
 import { toast } from "react-toastify";
 import { contestStore } from "./contestStore.js";
 
-const BASE_URL = "http://localhost:5000";
 
 const clearFilters = () => {
   localStorage.removeItem("contestSearchInput");
