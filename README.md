@@ -13,6 +13,8 @@ The **CodeFrenzy** is a MERN stack application designed to track programming con
 
 The backend is built with Node.js, Express, and MongoDB, while the frontend is built with React and TailwindCSS. The project is licensed under the GNU GENERAL PUBLIC LICENSE v3.
 
+🔗 **Live Website:** [CodeFrenzy](https://codefrenzy-tracker.vercel.app) 
+
 ## 2. Tech Stack
 - **Frontend:** React, TailwindCSS
 - **Backend:** Node.js, Express, MongoDB
