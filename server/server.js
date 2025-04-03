@@ -17,6 +17,9 @@ app.use(cors({ origin: process.env.CLIENT_BASE_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.send("CodeFrenzy API Server is running!");
+})
 // Routes
 app.use("/api/contests", contestRoutes);
 app.use("/api/bookmarks", bookmarkRoutes);
